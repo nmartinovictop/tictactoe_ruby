@@ -12,18 +12,49 @@ class Board
 
     attr_accessor :board
 
+
+    @@POSITIONS = {
+        [0,0] => 1,
+        [0,1] => 2,
+        [0,2] => 3,
+        [1,0] => 4,
+        [1,1] => 5,
+        [1,2] => 6,
+        [2,0] => 7,
+        [2,1] => 8,
+        [2,2] => 9
+    }
+
+    def self.POSITIONS
+        @@POSITIONS
+    end
+
+
     def initialize
         @board = Array.new(3) { Array.new(3,' ') }
     end
 
     def render
-        (0..2).each do |i|
-            puts " #{@board[i][0]} | #{@board[i][1]} | #{@board[i][2]} "
-            if i < 2
-                puts"___________"
-            end
-        end
+        # (0..2).each do |i|
+        #     puts " #{i*3 + 1} | #{i*3 + 2} | #{i*3 + 3} "
+        #     if i < 2
+        #         puts"___________"
+        #     end
+        # end
+
+        puts " #{@@POSITIONS[[0,0]]} | #{@@POSITIONS[[0,1]]} | #{@@POSITIONS[[0,2]]}"
+        puts "____________"
+        puts " #{@@POSITIONS[[1,0]]} | #{@@POSITIONS[[1,1]]} | #{@@POSITIONS[[1,2]]}"
+        puts "____________"
+        puts " #{@@POSITIONS[[2,0]]} | #{@@POSITIONS[[2,1]]} | #{@@POSITIONS[[2,2]]}"
+
     end
+
+    def place_position(num)
+        pos = @@POSITIONS.key(num)
+        pos
+    end
+
 
 
 end
@@ -32,6 +63,7 @@ end
 class Game
 
     attr_accessor :board
+    attr_reader :current_player
 
     def initialize
 
@@ -77,26 +109,50 @@ class Game
         false
     end
 
+
     def get_play
-        puts "It is #{@current_player.name}'s turn.  Please enter a space like '0,1'"
-        entry = gets.chomp.split(",")
-        @board.board[entry[0].to_i][entry[1].to_i] = @current_player.symbol
+        
+        puts "It is #{@current_player.name}'s turn.  Please enter a space"
+        entry = gets.chomp
+        system('clear')
+        pos = @board.place_position(entry.to_i)
+        if pos == nil || @board.board[pos[0]][pos[1]]!= " " 
+            puts "Nice Try.  Please select a free square"
+            return false
+        end
+        @board.board[pos[0]][pos[1]] = @current_player.symbol
+        Board.POSITIONS[pos] = @current_player.symbol
+        return true
+    end
+
+    def switch_player
+        if @current_player == @player1
+            @current_player = @player2
+        else
+            @current_player = @player1
+        end
     end
 
     def play
 
         while !game_draw? && !game_won?
             @board.render
-            get_play
-            if @current_player == @player1
-                @current_player = @player2
-            else
-                @current_player = @player1
+            if get_play
+                switch_player
             end
 
         end
 
-        puts "done"
+        if game_won?
+            switch_player
+            puts "#{@current_player.name} is the winner"
+            return
+        end
+
+        if game_draw?
+            puts "no one wins"
+            return
+        end
     end
 
 end

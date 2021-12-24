@@ -1,0 +1,10 @@
+b = Board.new
+b.board[0][0] = 'X'
+b.render
+
+
+g = Game.new
+
+
+
+# make it so people can't replace taken squares
