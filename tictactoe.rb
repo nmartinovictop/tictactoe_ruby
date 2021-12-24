@@ -10,28 +10,25 @@ end
 
 class Board
 
-    attr_accessor :board
+    attr_accessor :board 
+    attr_accessor :POSITIONS
 
 
-    @@POSITIONS = {
-        [0,0] => 1,
-        [0,1] => 2,
-        [0,2] => 3,
-        [1,0] => 4,
-        [1,1] => 5,
-        [1,2] => 6,
-        [2,0] => 7,
-        [2,1] => 8,
-        [2,2] => 9
-    }
-
-    def self.POSITIONS
-        @@POSITIONS
-    end
 
 
     def initialize
         @board = Array.new(3) { Array.new(3,' ') }
+        @POSITIONS = {
+            [0,0] => 1,
+            [0,1] => 2,
+            [0,2] => 3,
+            [1,0] => 4,
+            [1,1] => 5,
+            [1,2] => 6,
+            [2,0] => 7,
+            [2,1] => 8,
+            [2,2] => 9
+        }
     end
 
     def render
@@ -42,16 +39,16 @@ class Board
         #     end
         # end
 
-        puts " #{@@POSITIONS[[0,0]]} | #{@@POSITIONS[[0,1]]} | #{@@POSITIONS[[0,2]]}"
+        puts " #{@POSITIONS[[0,0]]} | #{@POSITIONS[[0,1]]} | #{@POSITIONS[[0,2]]}"
         puts "____________"
-        puts " #{@@POSITIONS[[1,0]]} | #{@@POSITIONS[[1,1]]} | #{@@POSITIONS[[1,2]]}"
+        puts " #{@POSITIONS[[1,0]]} | #{@POSITIONS[[1,1]]} | #{@POSITIONS[[1,2]]}"
         puts "____________"
-        puts " #{@@POSITIONS[[2,0]]} | #{@@POSITIONS[[2,1]]} | #{@@POSITIONS[[2,2]]}"
+        puts " #{@POSITIONS[[2,0]]} | #{@POSITIONS[[2,1]]} | #{@POSITIONS[[2,2]]}"
 
     end
 
     def place_position(num)
-        pos = @@POSITIONS.key(num)
+        pos = @POSITIONS.key(num)
         pos
     end
 
@@ -121,7 +118,7 @@ class Game
             return false
         end
         @board.board[pos[0]][pos[1]] = @current_player.symbol
-        Board.POSITIONS[pos] = @current_player.symbol
+        @board.POSITIONS[pos] = @current_player.symbol
         return true
     end
 
@@ -157,5 +154,12 @@ class Game
 
 end
 
-g = Game.new
-g.play
+play = true
+
+while play
+    g = Game.new
+    g.play
+    puts "would you like to play again? (y/n)"
+    answer = gets.chomp
+    answer == 'n' ? play = false : play = true
+end
